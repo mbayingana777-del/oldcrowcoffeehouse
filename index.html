@@ -4,183 +4,179 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Old Crow Coffeehouse — Arrival</title>
+  <meta name="description" content="Old Crow Coffeehouse — Winter cozy arrival. Choose your moment and wander through the rooms." />
 
-  <!-- Tasteful type: Playfair Display for headings, Inter for body -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:wght@400;600&display=swap" rel="stylesheet">
+  <!-- Typography -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="styles.css">
-  <meta name="description" content="Old Crow Coffeehouse — a quiet, premium arrival experience. Choose your moment and wander through the rooms." />
 </head>
-<body class="theme-dark">
-  <a class="skip-link" href="#rooms">Skip to rooms</a>
+<body>
+  <a class="skip-link" href="#rooms" id="skip">Skip to rooms</a>
 
   <header class="site-header" aria-hidden="true">
-    <div class="brand">
-      <svg width="36" height="36" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-        <circle cx="12" cy="12" r="10" fill="rgba(255,255,255,0.06)"/>
-        <path d="M8 15c0-2 4-2 4-5s4-2 4-2" stroke="rgba(255,240,220,0.9)" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+    <div class="brand" aria-hidden="true">
+      <svg width="40" height="40" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <rect x="1" y="1" width="22" height="22" rx="6" fill="var(--forest)" />
+        <path d="M7 14c0-2.5 5-2.5 5-6s5-2 5-2" stroke="#fff8ee" stroke-width="1.1" fill="none" stroke-linecap="round"/>
       </svg>
-      <span class="sr-only">Old Crow Coffeehouse</span>
     </div>
   </header>
 
   <main>
-    <!-- ENTRY / APPROACH SCENE -->
-    <section id="entry" class="entry-scene" aria-labelledby="entry-title" role="region">
-      <div class="scene-image" aria-hidden="true"></div>
+    <!-- HERO / ENTRY SCREEN -->
+    <section id="entry" class="entry-scene" role="region" aria-labelledby="entry-title">
+      <div class="hero-bg" role="img" aria-label="Exterior of Old Crow Coffeehouse on a winter morning"></div>
 
-      <div class="scene-overlay">
-        <div class="grain"></div>
+      <div class="overlays">
+        <div class="vignette" aria-hidden="true"></div>
+        <div class="grain" aria-hidden="true"></div>
+        <div class="overlay-gradient" aria-hidden="true"></div>
+      </div>
 
-        <div class="scene-inner">
-          <h1 id="entry-title" class="headline">OLD CROW COFFEEHOUSE</h1>
-          <p class="subtext">What brings you in today?</p>
+      <div class="entry-inner">
+        <h1 id="entry-title" class="headline">OLD CROW COFFEEHOUSE</h1>
+        <p class="subtext">What brings you in today?</p>
 
-          <nav class="choices" role="navigation" aria-label="Choose your mood">
-            <button class="choice" data-target="counter" aria-controls="counter">☕ Just need coffee</button>
-            <button class="choice" data-target="breakfast" aria-controls="breakfast">🥐 Breakfast vibes</button>
-            <button class="choice" data-target="donuts" aria-controls="donuts">🍩 Donuts (limited days)</button>
-            <button class="choice" data-target="slow" aria-controls="slow">🧘 Slow morning</button>
-          </nav>
+        <nav class="choices" role="navigation" aria-label="Choose your mood">
+          <button class="choice" data-target="counter" aria-controls="counter">☕ Just need coffee</button>
+          <button class="choice" data-target="breakfast" aria-controls="breakfast">🥐 Breakfast vibes</button>
+          <button class="choice" data-target="donuts" aria-controls="donuts">🍩 Donuts (Fri &amp; Sat)</button>
+          <button class="choice" data-target="slow" aria-controls="slow">🧘 Slow morning</button>
+        </nav>
 
-          <p class="hint">Tap a choice to wander in →</p>
+        <div class="entry-actions">
+          <a class="order-cta" href="https://www.oldcrowcoffeehouse.com/s/order?location=L997DRP29E90H#XBLGAQVX3LQYZWHLURH52C2N" target="_blank" rel="noopener noreferrer">Order →</a>
         </div>
 
-        <div class="edge-fade" aria-hidden="true"></div>
+        <p class="hint">Tap a choice to wander in — a gentle, cinematic transition.</p>
       </div>
     </section>
 
-    <!-- HORIZONTAL ROOMS -->
-    <section id="rooms" class="rooms-container" tabindex="-1" aria-label="Coffeehouse rooms">
-      <div class="rooms" id="roomsList">
+    <!-- ROOMS / HORIZONTAL SCROLL EXPERIENCE -->
+    <section id="rooms" class="rooms-section" tabindex="-1" aria-label="Coffeehouse rooms">
+      <div class="rooms" id="roomsList" role="list">
         <!-- Room: The Counter -->
-        <article id="counter" class="room" role="region" aria-labelledby="counter-title">
-          <div class="room-inner">
-            <div class="room-panel glass">
-              <h2 id="counter-title" class="room-title">The Counter</h2>
-              <p class="room-sub">Coffee & espresso — quick, precise, warm.</p>
+        <article id="counter" class="room" role="listitem" aria-labelledby="counter-title">
+          <div class="room-panel">
+            <h2 id="counter-title" class="room-title">The Counter</h2>
+            <p class="room-desc">Quick, considered coffee — pulled with care for a clear, warm cup.</p>
 
-              <ul class="menu">
-                <li>
-                  <strong>Espresso Single</strong>
-                  <span class="desc">Rich, clean, pulled on a medium-dark roast.</span>
-                </li>
-                <li>
-                  <strong>Americano</strong>
-                  <span class="desc">Hot water over espresso — crisp and balanced.</span>
-                </li>
-                <li>
-                  <strong>Cappuccino</strong>
-                  <span class="desc">Velvet microfoam, subtle sweetness.</span>
-                </li>
-                <li>
-                  <strong>Latte — Seasonal</strong>
-                  <span class="desc">House espresso, steamed milk, small seasonal note.</span>
-                </li>
-              </ul>
+            <ul class="featured" aria-label="Featured coffee items">
+              <li>
+                <strong>Espresso — Single</strong>
+                <span class="item-desc">Clean pull, medium-dark roast.</span>
+              </li>
+              <li>
+                <strong>Cappuccino</strong>
+                <span class="item-desc">Silky microfoam, balanced crema.</span>
+              </li>
+              <li>
+                <strong>Americano</strong>
+                <span class="item-desc">Hot water over espresso — bright and familiar.</span>
+              </li>
+            </ul>
 
-              <a class="order" href="https://oldcrowcoffeehouse.com/s/cart" rel="noopener noreferrer">Order →</a>
-            </div>
-            <div class="room-photo" aria-hidden="true"></div>
+            <a class="order" href="https://www.oldcrowcoffeehouse.com/s/order?location=L997DRP29E90H#XBLGAQVX3LQYZWHLURH52C2N" target="_blank" rel="noopener noreferrer">Order →</a>
           </div>
         </article>
 
         <!-- Room: Breakfast Table -->
-        <article id="breakfast" class="room" role="region" aria-labelledby="breakfast-title">
-          <div class="room-inner reverse">
-            <div class="room-photo" aria-hidden="true"></div>
-            <div class="room-panel glass">
-              <h2 id="breakfast-title" class="room-title">Breakfast Table</h2>
-              <p class="room-sub">Warm bread, deliberate flavors — sit or take away.</p>
+        <article id="breakfast" class="room" role="listitem" aria-labelledby="breakfast-title">
+          <div class="room-panel">
+            <h2 id="breakfast-title" class="room-title">Breakfast Table</h2>
+            <p class="room-desc">Warm morning plates — thoughtful combinations to start the day.</p>
 
-              <ul class="menu">
-                <li>
-                  <strong>Morning Sandwich</strong>
-                  <span class="desc">Egg, aged cheddar, smoked ham, miso-butter on a toasted roll.</span>
-                </li>
-                <li>
-                  <strong>Granola & Yogurt</strong>
-                  <span class="desc">House granola, local yogurt, lemon honey.</span>
-                </li>
-                <li>
-                  <strong>Avocado Toast</strong>
-                  <span class="desc">Seeded sourdough, smashed avocado, chile oil.</span>
-                </li>
-                <li>
-                  <strong>Breakfast Bowl</strong>
-                  <span class="desc">Farro, roasted squash, poached egg, herb vinaigrette.</span>
-                </li>
-              </ul>
+            <ul class="featured" aria-label="Featured breakfast items">
+              <li>
+                <strong>Morning Sandwich</strong>
+                <span class="item-desc">Egg, aged cheddar, house buttered roll.</span>
+              </li>
+              <li>
+                <strong>Avocado Toast</strong>
+                <span class="item-desc">Seeded sourdough, lemon, chile oil.</span>
+              </li>
+              <li>
+                <strong>Granola & Yogurt</strong>
+                <span class="item-desc">Local yogurt, preserved citrus honey.</span>
+              </li>
+            </ul>
 
-              <a class="order" href="https://oldcrowcoffeehouse.com/s/cart" rel="noopener noreferrer">Order →</a>
-            </div>
+            <a class="order" href="https://www.oldcrowcoffeehouse.com/s/order?location=L997DRP29E90H#XBLGAQVX3LQYZWHLURH52C2N" target="_blank" rel="noopener noreferrer">Order →</a>
           </div>
         </article>
 
         <!-- Room: Donut Drop -->
-        <article id="donuts" class="room" role="region" aria-labelledby="donuts-title">
-          <div class="room-inner">
-            <div class="room-panel glass">
-              <h2 id="donuts-title" class="room-title">Donut Drop</h2>
-              <p class="room-sub">Small batches. Limited days. Arrive early.</p>
+        <article id="donuts" class="room" role="listitem" aria-labelledby="donuts-title">
+          <div class="room-panel">
+            <h2 id="donuts-title" class="room-title">Donut Drop</h2>
+            <p class="room-desc">Small-batch donuts — Friday &amp; Saturday. Arrive early for the best selection.</p>
 
-              <ul class="menu">
-                <li>
-                  <strong>Classic Glazed</strong>
-                  <span class="desc">Light, tender crumb with a thin vanilla glaze.</span>
-                </li>
-                <li>
-                  <strong>Citrus & Ricotta</strong>
-                  <span class="desc">Bright lemon glaze, ricotta-enriched dough.</span>
-                </li>
-                <li>
-                  <strong>Salted Chocolate</strong>
-                  <span class="desc">Cocoa dough, dark chocolate finish, flake salt.</span>
-                </li>
-              </ul>
+            <ul class="featured" aria-label="Featured donut items">
+              <li>
+                <strong>Classic Glazed</strong>
+                <span class="item-desc">Tender crumb with a light vanilla glaze.</span>
+              </li>
+              <li>
+                <strong>Salted Chocolate</strong>
+                <span class="item-desc">Rich chocolate finish, flake sea salt.</span>
+              </li>
+              <li>
+                <strong>Citrus Ricotta</strong>
+                <span class="item-desc">Bright lemon glaze and soft ricotta dough.</span>
+              </li>
+            </ul>
 
-              <p class="scarcity">Usually available: Fri • Sat • early Sun</p>
+            <p class="schedule-note">Available: Friday &amp; Saturday</p>
 
-              <a class="order" href="https://oldcrowcoffeehouse.com/s/cart" rel="noopener noreferrer">Order →</a>
-            </div>
-
-            <div class="room-photo" aria-hidden="true"></div>
+            <a class="order" href="https://www.oldcrowcoffeehouse.com/s/order?location=L997DRP29E90H#XBLGAQVX3LQYZWHLURH52C2N" target="_blank" rel="noopener noreferrer">Order →</a>
           </div>
         </article>
 
         <!-- Room: Slow Morning -->
-        <article id="slow" class="room" role="region" aria-labelledby="slow-title">
-          <div class="room-inner reverse">
-            <div class="room-photo" aria-hidden="true"></div>
-            <div class="room-panel glass">
-              <h2 id="slow-title" class="room-title">Slow Morning</h2>
-              <p class="room-sub">Space to read, linger, stretch. Low voices only.</p>
+        <article id="slow" class="room" role="listitem" aria-labelledby="slow-title">
+          <div class="room-panel">
+            <h2 id="slow-title" class="room-title">Slow Morning</h2>
+            <p class="room-desc">Space to linger — quiet cups, warm light, and seating for thinking.</p>
 
-              <ul class="menu">
-                <li>
-                  <strong>Pour Over</strong>
-                  <span class="desc">Single-origin, brewed to order — contemplative and bright.</span>
-                </li>
-                <li>
-                  <strong>Tea — Loose Leaf</strong>
-                  <span class="desc">A small selection: chamomile, gunpowder, earl grey.</span>
-                </li>
-                <li>
-                  <strong>Pastry Plate</strong>
-                  <span class="desc">A selection of that morning's pastries — share or keep.</span>
-                </li>
-              </ul>
+            <ul class="featured" aria-label="Featured slow morning items">
+              <li>
+                <strong>Pour Over</strong>
+                <span class="item-desc">Single-origin, brewed to order.</span>
+              </li>
+              <li>
+                <strong>Loose Leaf Tea</strong>
+                <span class="item-desc">Chamomile, earl grey, and a seasonal selection.</span>
+              </li>
+              <li>
+                <strong>Pastry Plate</strong>
+                <span class="item-desc">A small selection to share or keep.</span>
+              </li>
+            </ul>
 
-              <a class="order" href="https://oldcrowcoffeehouse.com/s/cart" rel="noopener noreferrer">Order →</a>
-            </div>
+            <a class="order" href="https://www.oldcrowcoffeehouse.com/s/order?location=L997DRP29E90H#XBLGAQVX3LQYZWHLURH52C2N" target="_blank" rel="noopener noreferrer">Order →</a>
           </div>
         </article>
-      </div> <!-- .rooms -->
+      </div>
     </section>
   </main>
 
+  <!-- HUD / Bottom navigation -->
+  <nav class="hud" role="navigation" aria-label="Rooms navigation">
+    <div class="hud-left" role="group" aria-label="Rooms">
+      <button class="hud-btn" data-target="counter" aria-label="Go to The Counter">Counter</button>
+      <button class="hud-btn" data-target="breakfast" aria-label="Go to Breakfast Table">Breakfast</button>
+      <button class="hud-btn" data-target="donuts" aria-label="Go to Donut Drop">Donuts</button>
+      <button class="hud-btn" data-target="slow" aria-label="Go to Slow Morning">Slow</button>
+    </div>
+
+    <div class="hud-right">
+      <a class="hud-order" href="https://www.oldcrowcoffeehouse.com/s/order?location=L997DRP29E90H#XBLGAQVX3LQYZWHLURH52C2N" target="_blank" rel="noopener noreferrer">Order →</a>
+    </div>
+  </nav>
+
   <footer class="site-footer" aria-hidden="true">
-    <small>© Old Crow Coffeehouse — local, quietly proud.</small>
+    <small>© Old Crow Coffeehouse — Winter • January</small>
   </footer>
 
   <script src="script.js" defer></script>
