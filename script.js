@@ -1,27 +1,42 @@
-// Minimal, focused JS for navigation & cinematic scroll
-// - Handles entry choices -> horizontal rooms
-// - Adds 'is-visible' when a room is in view
-// - Responsive behavior: on small screens fall back to vertical scrolling
+/*
+  script.js
+  Minimal, accessible JS to:
+  - Handle entry choices -> cinematic transition into rooms
+  - Manage horizontal scroll experience on desktop, vertical on mobile
+  - HUD navigation with active highlighting
+  - Keyboard navigation and deep-link support
+*/
 
 (() => {
-  const choices = Array.from(document.querySelectorAll('.choice'));
-  const roomsEl = document.getElementById('roomsList');
-  const roomEls = Array.from(document.querySelectorAll('.room'));
-  const entry = document.getElementById('entry');
+  const ENTRY_ID = 'entry';
+  const ROOMS_ID = 'roomsList';
+  const ROOM_SELECTOR = '.room';
+  const CHOICE_SELECTOR = '.choice';
+  const HUD_BTN_SELECTOR = '.hud-btn';
+  const ENTRY_HIDE_CLASS = 'entry-hidden';
+  const VISIBLE_CLASS = 'is-visible';
+  const ORDER_URL_HASHLESS = 'https://www.oldcrowcoffeehouse.com/s/order?location=L997DRP29E90H#XBLGAQVX3LQYZWHLURH52C2N';
 
-  // Small helper: determines if layout is horizontal
-  function isHorizontal() {
+  const entry = document.getElementById(ENTRY_ID);
+  const roomsEl = document.getElementById(ROOMS_ID);
+  const rooms = Array.from(document.querySelectorAll(ROOM_SELECTOR));
+  const choices = Array.from(document.querySelectorAll(CHOICE_SELECTOR));
+  const hudButtons = Array.from(document.querySelectorAll(HUD_BTN_SELECTOR));
+  const roomsSection = document.getElementById('rooms');
+
+  if (!roomsEl) return;
+
+  // Detect layout type
+  function isDesktop() {
     return window.matchMedia('(min-width: 901px)').matches;
   }
 
-  // Smooth scroll for horizontal container with easing
-  function smoothScrollHorizontal(container, targetLeft, duration = 700) {
+  // Smooth horizontal scroll with easing
+  function smoothHorizontalScroll(container, targetX, duration = 700) {
     const start = container.scrollLeft;
-    const change = targetLeft - start;
+    const change = targetX - start;
     const startTime = performance.now();
-
-    // cubic easing
-    function ease(t) { return 1 - Math.pow(1 - t, 3); }
+    const ease = t => 1 - Math.pow(1 - t, 3);
 
     function animate(now) {
       const elapsed = now - startTime;
@@ -32,112 +47,149 @@
     requestAnimationFrame(animate);
   }
 
-  // Enter the rooms experience:
-  // fade out entry scene (subtle) and move focus to the rooms container.
-  function enterRooms(targetId) {
-    // animate entry out
-    entry.style.transition = 'opacity 520ms ease, transform 520ms ease';
-    entry.style.opacity = '0';
-    entry.style.transform = 'translateY(-10px)';
-    setTimeout(() => {
-      entry.style.display = 'none';
-      // focus rooms container for keyboard accessibility
-      document.getElementById('rooms').focus();
-      // scroll to the requested room
-      navigateToRoom(targetId, {instant: false});
-    }, 520);
-  }
-
-  // Navigate to a room by id
+  // Navigate to room by id
   function navigateToRoom(id, {instant = false} = {}) {
     const target = document.getElementById(id);
     if (!target) return;
-
-    if (isHorizontal()) {
-      // compute left offset
-      const index = roomEls.indexOf(target);
-      const left = index * roomsEl.clientWidth;
+    if (isDesktop()) {
+      const index = rooms.indexOf(target);
+      const left = index * (roomsEl.clientWidth + parseInt(getComputedStyle(roomsEl).gap || 28));
       if (instant) roomsEl.scrollLeft = left;
-      else smoothScrollHorizontal(roomsEl, left, 720);
+      else smoothHorizontalScroll(roomsEl, left, 720);
+      target.focus({preventScroll: true});
     } else {
-      // vertical: scroll the page to the element
+      // mobile / stacked: scroll page to the element
       const rect = target.getBoundingClientRect();
-      const top = window.scrollY + rect.top - 20;
+      const top = window.scrollY + rect.top - 24;
       if (instant) window.scrollTo(0, top);
       else window.scrollTo({top, behavior: 'smooth'});
+      target.focus();
     }
   }
 
-  // Attach click handlers for the initial choices
+  // Entry -> rooms transition
+  function enterRooms(targetId) {
+    // Add hide class to entry for CSS transitions
+    entry.classList.add(ENTRY_HIDE_CLASS);
+
+    // After transition, hide entry from layout and focus rooms
+    setTimeout(() => {
+      entry.style.display = 'none';
+      roomsSection.focus();
+      // Navigate to the designated room
+      navigateToRoom(targetId, {instant: false});
+    }, 480);
+  }
+
+  // Hook up choice buttons
   choices.forEach(btn => {
-    btn.addEventListener('click', (e) => {
+    btn.addEventListener('click', () => {
       const targetId = btn.getAttribute('data-target');
-      // start the cinematic transition
       enterRooms(targetId);
     });
-  });
 
-  // Observe rooms to toggle 'is-visible' and keep panel animations tasteful
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(ent => {
-      const el = ent.target;
-      if (ent.isIntersecting && ent.intersectionRatio > 0.4) {
-        el.classList.add('is-visible');
-        // Update URL hash for deep-linking
-        history.replaceState(null, '', `#${el.id}`);
-      } else {
-        el.classList.remove('is-visible');
+    btn.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        btn.click();
       }
     });
-  }, {
-    threshold: [0.4, 0.7]
   });
 
-  roomEls.forEach(r => observer.observe(r));
+  // HUD buttons
+  hudButtons.forEach(b => {
+    b.addEventListener('click', () => {
+      const target = b.getAttribute('data-target');
+      navigateToRoom(target);
+    });
+    b.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault(); b.click();
+      }
+    });
+  });
 
-  // Keyboard navigation on rooms: left/right to move between rooms
-  document.getElementById('rooms').addEventListener('keydown', (e) => {
+  // IntersectionObserver to reveal rooms and update HUD active state & history
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entryObs => {
+      const el = entryObs.target;
+      const id = el.id;
+      if (entryObs.isIntersecting && entryObs.intersectionRatio >= 0.45) {
+        el.classList.add(VISIBLE_CLASS);
+        // Update HUD active button
+        hudButtons.forEach(b => {
+          b.classList.toggle('active', b.getAttribute('data-target') === id);
+          b.setAttribute('aria-pressed', b.getAttribute('data-target') === id ? 'true' : 'false');
+        });
+        // Update location.hash quietly (no jump)
+        history.replaceState(null, '', `#${id}`);
+      } else {
+        el.classList.remove(VISIBLE_CLASS);
+      }
+    });
+  }, {threshold: [0.45]});
+
+  rooms.forEach(r => {
+    observer.observe(r);
+  });
+
+  // Keyboard left/right navigation when focused in rooms container
+  roomsEl.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
       e.preventDefault();
-      // Find current visible index
-      const idx = roomEls.findIndex(r => r.classList.contains('is-visible'));
-      let next = idx;
-      if (e.key === 'ArrowRight') next = Math.min(roomEls.length - 1, idx + 1);
-      if (e.key === 'ArrowLeft') next = Math.max(0, idx - 1);
-      // if none visible default to 0
-      if (idx === -1) next = 0;
-      navigateToRoom(roomEls[next].id);
+      const visibleIndex = rooms.findIndex(r => r.classList.contains(VISIBLE_CLASS));
+      let next = visibleIndex;
+      if (visibleIndex === -1) next = 0;
+      if (e.key === 'ArrowRight') next = Math.min(rooms.length - 1, visibleIndex + 1);
+      if (e.key === 'ArrowLeft') next = Math.max(0, visibleIndex - 1);
+      navigateToRoom(rooms[next].id);
     }
   });
 
-  // Allow clicking on a room's panel to center it
-  roomEls.forEach(r => {
-    r.addEventListener('click', (e) => {
-      const rect = r.getBoundingClientRect();
-      // Only treat clicks in the panel area (avoid accidental clicks on photo)
-      navigateToRoom(r.id);
-    });
+  // Make each room panel keyboard-focusable
+  rooms.forEach(r => {
+    r.setAttribute('tabindex', '-1');
   });
 
-  // Respect hash on load — if user comes with a deep link, jump in
+  // Respect hash on load (deep link). If hash points to a room, show rooms and jump there.
   window.addEventListener('load', () => {
     const hash = location.hash.replace('#', '');
     if (hash && document.getElementById(hash)) {
-      // hide entry instantly for deep link
+      // Hide entry immediately for deep-link
       entry.style.display = 'none';
-      // ensure layout/measurements are ready
+      // Ensure layout and then jump
       setTimeout(() => navigateToRoom(hash, {instant: true}), 80);
     }
   });
 
-  // When resizing, ensure the current room stays centered
-  let resizeTimeout = null;
+  // Re-center on resize to keep the active room centered
+  let resizeTimer = null;
   window.addEventListener('resize', () => {
-    clearTimeout(resizeTimeout);
-    resizeTimeout = setTimeout(() => {
-      const visible = roomEls.find(r => r.classList.contains('is-visible')) || roomEls[0];
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      const visible = rooms.find(r => r.classList.contains(VISIBLE_CLASS)) || rooms[0];
       if (visible) navigateToRoom(visible.id, {instant: true});
-    }, 120);
+    }, 140);
+  });
+
+  // Accessibility: Skip link focusing
+  const skip = document.getElementById('skip');
+  skip.addEventListener('click', (e) => {
+    e.preventDefault();
+    roomsSection.focus();
+    // If entry is visible, hide it when skipping
+    if (!entry.classList.contains(ENTRY_HIDE_CLASS)) {
+      entry.classList.add(ENTRY_HIDE_CLASS);
+      setTimeout(() => entry.style.display = 'none', 480);
+    }
+  });
+
+  // Graceful fallback: if images don't load, ensure contrast & background color remain readable
+  // (No explicit code needed; CSS provides color fallbacks)
+
+  // Enhance focus visibility for keyboard users
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Tab') document.body.classList.add('user-is-tabbing');
   });
 
 })();
