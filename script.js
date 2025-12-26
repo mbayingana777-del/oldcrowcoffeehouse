@@ -1,158 +1,148 @@
 /*
-  script.js — upgraded
-  Goals:
-  1) Seamless return to Arrival (green hero) via HUD Home button
-  2) Smooth “enter” transition + menu peek button
-  3) Better horizontal scroll math + active tab tracking + progress bar
-  4) Winter snow effect + subtle parallax on hero background
+  script.js
+  Fixes:
+  - Arrival (entry) can be returned to seamlessly
+  - Tabs always work (no reliance on gap math)
+  - Updates hash without breaking entry/rooms
+  - Scroll progress bar
+  - Click “View menu” smooth jump
 */
 
 (() => {
   const ENTRY_ID = 'entry';
-  const ROOMS_LIST_ID = 'roomsList';
   const ROOMS_SECTION_ID = 'rooms';
+  const ROOMS_LIST_ID = 'roomsList';
+
   const ROOM_SELECTOR = '.room';
   const CHOICE_SELECTOR = '.choice';
   const HUD_BTN_SELECTOR = '.hud-btn';
-  const HUD_HOME_ID = 'hudHome';
-  const PEEK_MENU_ID = 'peekMenu';
-  const PROGRESS_ID = 'progressBar';
 
   const ENTRY_HIDE_CLASS = 'entry-hidden';
-  const ENTRY_OFF_CLASS = 'entry-off';
   const VISIBLE_CLASS = 'is-visible';
 
-  const ORDER_URL =
-    'https://www.oldcrowcoffeehouse.com/s/order?location=L997DRP29E90H#XBLGAQVX3LQYZWHLURH52C2N';
-
   const entry = document.getElementById(ENTRY_ID);
-  const roomsEl = document.getElementById(ROOMS_LIST_ID);
   const roomsSection = document.getElementById(ROOMS_SECTION_ID);
+  const roomsList = document.getElementById(ROOMS_LIST_ID);
+
   const rooms = Array.from(document.querySelectorAll(ROOM_SELECTOR));
   const choices = Array.from(document.querySelectorAll(CHOICE_SELECTOR));
   const hudButtons = Array.from(document.querySelectorAll(HUD_BTN_SELECTOR));
-  const hudHome = document.getElementById(HUD_HOME_ID);
-  const peekMenu = document.getElementById(PEEK_MENU_ID);
-  const progressBar = document.getElementById(PROGRESS_ID);
 
-  if (!entry || !roomsEl || !roomsSection || rooms.length === 0) return;
+  const scrollBar = document.getElementById('scrollBar');
+  const seeMenuBtn = document.getElementById('seeMenuBtn');
 
-  // Force all [data-order] links to the correct official URL
-  document.querySelectorAll('[data-order]').forEach((a) => {
-    a.href = ORDER_URL;
-    a.target = '_blank';
-    a.rel = 'noopener noreferrer';
-  });
+  if (!entry || !roomsSection || !roomsList || rooms.length === 0) return;
 
-  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const isDesktop = () => window.matchMedia('(min-width: 981px)').matches;
 
-  function isDesktop() {
-    return window.matchMedia('(min-width: 901px)').matches;
-  }
+  const prefersReducedMotion = () =>
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // --- Smooth horizontal scroll with easing ---
-  function smoothHorizontalScroll(container, targetX, duration = 720) {
-    if (prefersReduced) {
-      container.scrollLeft = targetX;
+  // Smooth scroll helper
+  function smoothScrollTo({ top, left, el, duration = 720 }) {
+    if (prefersReducedMotion()) {
+      if (el && typeof left === 'number') el.scrollLeft = left;
+      if (typeof top === 'number') window.scrollTo(0, top);
       return;
     }
-    const start = container.scrollLeft;
-    const change = targetX - start;
+
     const startTime = performance.now();
-    const ease = (t) => 1 - Math.pow(1 - t, 3);
 
-    function animate(now) {
-      const elapsed = now - startTime;
-      const t = Math.min(1, elapsed / duration);
-      container.scrollLeft = start + change * ease(t);
-      if (t < 1) requestAnimationFrame(animate);
+    if (el && typeof left === 'number') {
+      const start = el.scrollLeft;
+      const change = left - start;
+      const ease = t => 1 - Math.pow(1 - t, 3);
+
+      function tick(now) {
+        const t = Math.min(1, (now - startTime) / duration);
+        el.scrollLeft = Math.round(start + change * ease(t));
+        if (t < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+      return;
     }
-    requestAnimationFrame(animate);
+
+    if (typeof top === 'number') {
+      window.scrollTo({ top, behavior: 'smooth' });
+    }
   }
 
-  // Find room by id
-  function getRoomById(id) {
-    return document.getElementById(id);
+  // View switching
+  function showEntry() {
+    entry.style.display = '';
+    entry.classList.remove(ENTRY_HIDE_CLASS);
+
+    // Scroll to top so the hero feels “full”
+    smoothScrollTo({ top: 0 });
+
+    // Update active HUD state
+    setActive('entry');
+
+    // Hash becomes #arrival (optional) or blank
+    history.replaceState(null, '', '#arrival');
   }
 
-  // Compute scrollLeft to center a room in the horizontal container
-  function scrollLeftForRoom(room) {
-    const containerRect = roomsEl.getBoundingClientRect();
-    const roomRect = room.getBoundingClientRect();
-    const currentScroll = roomsEl.scrollLeft;
-
-    // room's left relative to container scroll area
-    const roomLeftInContainer = roomRect.left - containerRect.left + currentScroll;
-    const target = roomLeftInContainer - (roomsEl.clientWidth - room.clientWidth) / 2;
-    return Math.max(0, target);
+  function hideEntry() {
+    entry.classList.add(ENTRY_HIDE_CLASS);
+    setTimeout(() => {
+      entry.style.display = 'none';
+    }, 520);
   }
 
-  // Navigate to room by id
+  // Find left offset of a room inside the horizontal scroller (real math, no guessing)
+  function getRoomLeft(target) {
+    const containerRect = roomsList.getBoundingClientRect();
+    const targetRect = target.getBoundingClientRect();
+    const delta = targetRect.left - containerRect.left;
+    return roomsList.scrollLeft + delta - 0; // no extra shift
+  }
+
   function navigateToRoom(id, { instant = false } = {}) {
-    const target = getRoomById(id);
+    const target = document.getElementById(id);
     if (!target) return;
 
+    // If they click "ARRIVAL"
+    if (id === 'entry' || id === 'arrival') {
+      showEntry();
+      return;
+    }
+
+    // Ensure rooms view is visible
+    if (entry.style.display !== 'none') hideEntry();
+
+    // Focus rooms section
+    roomsSection.focus({ preventScroll: true });
+
     if (isDesktop()) {
-      const left = scrollLeftForRoom(target);
-      if (instant) roomsEl.scrollLeft = left;
-      else smoothHorizontalScroll(roomsEl, left, 760);
+      const left = getRoomLeft(target);
+      if (instant) roomsList.scrollLeft = left;
+      else smoothScrollTo({ el: roomsList, left, duration: 760 });
       target.focus({ preventScroll: true });
     } else {
       const rect = target.getBoundingClientRect();
       const top = window.scrollY + rect.top - 18;
-      if (instant || prefersReduced) window.scrollTo(0, top);
-      else window.scrollTo({ top, behavior: 'smooth' });
-      target.focus({ preventScroll: true });
+      if (instant) window.scrollTo(0, top);
+      else smoothScrollTo({ top });
+      target.focus();
     }
   }
 
-  // Entry -> rooms transition
-  function enterRooms(targetId) {
-    entry.classList.add(ENTRY_HIDE_CLASS);
-
-    // Wait for CSS fade then remove from layout
-    window.setTimeout(() => {
-      entry.classList.add(ENTRY_OFF_CLASS);
-
-      // Focus rooms section and move
-      roomsSection.focus({ preventScroll: true });
-      roomsSection.scrollIntoView({ behavior: prefersReduced ? 'auto' : 'smooth', block: 'start' });
-
-      window.setTimeout(() => {
-        navigateToRoom(targetId, { instant: false });
-      }, prefersReduced ? 0 : 220);
-    }, prefersReduced ? 0 : 480);
-  }
-
-  // Return to Arrival (hero)
-  function returnToArrival() {
-    // Show entry again
-    entry.classList.remove(ENTRY_OFF_CLASS);
-    // Small frame to allow layout, then remove hidden class for smooth fade in
-    requestAnimationFrame(() => {
-      entry.classList.remove(ENTRY_HIDE_CLASS);
-
-      // Reset scroll state
-      if (isDesktop()) roomsEl.scrollLeft = 0;
-      else window.scrollTo({ top: 0, behavior: prefersReduced ? 'auto' : 'smooth' });
-
-      // Update hash to nothing (clean)
-      history.replaceState(null, '', location.pathname + location.search);
-      setActive('counter'); // default highlight
-      updateProgress();
+  function setActive(id) {
+    hudButtons.forEach(btn => {
+      const t = btn.getAttribute('data-target');
+      const active = (t === id) || (id === 'arrival' && t === 'entry');
+      btn.classList.toggle('active', active);
+      btn.setAttribute('aria-pressed', active ? 'true' : 'false');
     });
-
-    // Focus top
-    entry.scrollIntoView({ behavior: prefersReduced ? 'auto' : 'smooth', block: 'start' });
   }
 
-  // Hook up entry choice buttons
-  choices.forEach((btn) => {
+  // Entry choice click
+  choices.forEach(btn => {
     btn.addEventListener('click', () => {
       const targetId = btn.getAttribute('data-target');
-      enterRooms(targetId);
+      hideEntry();
+      setTimeout(() => navigateToRoom(targetId), 120);
     });
-
     btn.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
@@ -162,236 +152,84 @@
   });
 
   // HUD buttons
-  hudButtons.forEach((b) => {
-    b.addEventListener('click', () => {
-      const target = b.getAttribute('data-target');
+  hudButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.getAttribute('data-target');
       navigateToRoom(target);
     });
+  });
 
-    b.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        b.click();
-      }
+  // Inline jump buttons inside rooms
+  document.querySelectorAll('[data-jump]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.getAttribute('data-jump');
+      navigateToRoom(target);
     });
   });
 
-  // HUD Home
-  if (hudHome) {
-    hudHome.addEventListener('click', returnToArrival);
-    hudHome.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        returnToArrival();
+  // "View menu" button from hero
+  if (seeMenuBtn) {
+    seeMenuBtn.addEventListener('click', () => {
+      hideEntry();
+      setTimeout(() => navigateToRoom('counter'), 120);
+    });
+  }
+
+  // Reveal observer + update hash for rooms
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(ent => {
+      const el = ent.target;
+      if (ent.isIntersecting && ent.intersectionRatio >= 0.55) {
+        el.classList.add(VISIBLE_CLASS);
+        setActive(el.id);
+        history.replaceState(null, '', `#${el.id}`);
       }
     });
-  }
+  }, { threshold: [0.55] });
 
-  // Peek menu button on hero
-  if (peekMenu) {
-    peekMenu.addEventListener('click', () => {
-      // don't hide entry; just scroll to rooms title preview
-      roomsSection.scrollIntoView({ behavior: prefersReduced ? 'auto' : 'smooth', block: 'start' });
-    });
-  }
-
-  // Active state
-  function setActive(id) {
-    hudButtons.forEach((b) => {
-      const on = b.getAttribute('data-target') === id;
-      b.classList.toggle('active', on);
-      b.setAttribute('aria-pressed', on ? 'true' : 'false');
-    });
-  }
-
-  // Reveal animation + HUD update
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entryObs) => {
-        const el = entryObs.target;
-        const id = el.id;
-
-        if (entryObs.isIntersecting && entryObs.intersectionRatio >= 0.45) {
-          el.classList.add(VISIBLE_CLASS);
-          setActive(id);
-          history.replaceState(null, '', `#${id}`);
-          updateProgress();
-        }
-      });
-    },
-    { threshold: [0.45] }
-  );
-
-  rooms.forEach((r) => observer.observe(r));
-  rooms.forEach((r) => r.setAttribute('tabindex', '-1'));
-
-  // Keyboard left/right navigation on desktop (when roomsEl focused)
-  roomsEl.addEventListener('keydown', (e) => {
-    if (!isDesktop()) return;
-
-    if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
-      e.preventDefault();
-      const visibleIndex = rooms.findIndex((r) => r.classList.contains(VISIBLE_CLASS));
-      let next = visibleIndex === -1 ? 0 : visibleIndex;
-
-      if (e.key === 'ArrowRight') next = Math.min(rooms.length - 1, next + 1);
-      if (e.key === 'ArrowLeft') next = Math.max(0, next - 1);
-
-      navigateToRoom(rooms[next].id);
-    }
+  rooms.forEach(r => {
+    r.setAttribute('tabindex', '-1');
+    observer.observe(r);
   });
 
-  // Progress bar based on scroll position
+  // Scroll progress (page based)
   function updateProgress() {
-    if (!progressBar) return;
-
-    if (isDesktop()) {
-      const maxScroll = roomsEl.scrollWidth - roomsEl.clientWidth;
-      const pct = maxScroll <= 0 ? 0 : (roomsEl.scrollLeft / maxScroll) * 100;
-      progressBar.style.width = `${Math.max(0, Math.min(100, pct))}%`;
-    } else {
-      // mobile: approximate based on which room is active
-      const idx = rooms.findIndex((r) => r.classList.contains(VISIBLE_CLASS));
-      const pct = idx <= 0 ? 0 : (idx / (rooms.length - 1)) * 100;
-      progressBar.style.width = `${Math.max(0, Math.min(100, pct))}%`;
-    }
+    const doc = document.documentElement;
+    const max = doc.scrollHeight - doc.clientHeight;
+    const y = window.scrollY;
+    const pct = max <= 0 ? 0 : (y / max) * 100;
+    if (scrollBar) scrollBar.style.width = `${Math.min(100, Math.max(0, pct))}%`;
   }
+  window.addEventListener('scroll', updateProgress, { passive: true });
+  updateProgress();
 
-  roomsEl.addEventListener('scroll', () => requestAnimationFrame(updateProgress), { passive: true });
-  window.addEventListener('scroll', () => requestAnimationFrame(updateProgress), { passive: true });
-
-  // Deep link behavior:
-  // If user visits with #breakfast etc, auto-enter after a short beat (feels cinematic)
+  // Respect hash on load
   window.addEventListener('load', () => {
-    // Snow canvas init
-    initSnow();
+    const raw = location.hash.replace('#', '').trim();
 
-    const hash = location.hash.replace('#', '');
-    if (hash && getRoomById(hash)) {
-      // show hero for a moment, then enter
-      if (!prefersReduced) {
-        setTimeout(() => enterRooms(hash), 650);
-      } else {
-        // reduced motion: go straight
-        entry.classList.add(ENTRY_OFF_CLASS);
-        navigateToRoom(hash, { instant: true });
-      }
+    if (!raw || raw === 'arrival') {
+      showEntry();
+      return;
+    }
+
+    if (raw && document.getElementById(raw)) {
+      // Direct deep link -> open rooms
+      entry.style.display = 'none';
+      navigateToRoom(raw, { instant: true });
     } else {
-      setActive('counter');
-      updateProgress();
+      showEntry();
     }
   });
 
-  // Resize keep active centered
+  // Keep current room aligned on resize
   let resizeTimer = null;
   window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => {
-      updateProgress();
-      const active = rooms.find((r) => r.classList.contains(VISIBLE_CLASS)) || rooms[0];
-      if (active) navigateToRoom(active.id, { instant: true });
-    }, 160);
+      const hash = location.hash.replace('#', '');
+      const current = document.getElementById(hash) || rooms[0];
+      if (current) navigateToRoom(current.id, { instant: true });
+    }, 140);
   });
 
-  // Skip link handling: hide entry if skipping
-  const skip = document.getElementById('skip');
-  skip.addEventListener('click', (e) => {
-    e.preventDefault();
-    // do not fully hide entry; just scroll to rooms section
-    roomsSection.focus({ preventScroll: true });
-    roomsSection.scrollIntoView({ behavior: prefersReduced ? 'auto' : 'smooth', block: 'start' });
-  });
-
-  // ---- HERO PARALLAX (subtle) ----
-  const heroBg = document.querySelector('.hero-bg');
-  window.addEventListener(
-    'mousemove',
-    (e) => {
-      if (!heroBg || prefersReduced) return;
-      const x = (e.clientX / window.innerWidth - 0.5) * 6;
-      const y = (e.clientY / window.innerHeight - 0.5) * 6;
-      heroBg.style.transform = `scale(1.03) translate(${x}px, ${y}px)`;
-    },
-    { passive: true }
-  );
-
-  // ---- SNOW CANVAS (lightweight) ----
-  function initSnow() {
-    const canvas = document.getElementById('snow');
-    if (!canvas) return;
-
-    const ctx = canvas.getContext('2d');
-    let w = 0, h = 0;
-    let raf = null;
-
-    const flakes = [];
-    const FLAKE_COUNT = 110; // subtle but noticeable
-
-    function resize() {
-      w = canvas.width = window.innerWidth;
-      h = canvas.height = window.innerHeight;
-    }
-    resize();
-    window.addEventListener('resize', resize);
-
-    function rand(min, max) {
-      return Math.random() * (max - min) + min;
-    }
-
-    function makeFlake() {
-      return {
-        x: rand(0, w),
-        y: rand(-h, 0),
-        r: rand(0.6, 2.2),
-        vx: rand(-0.4, 0.4),
-        vy: rand(0.6, 1.7),
-        a: rand(0.18, 0.55)
-      };
-    }
-
-    for (let i = 0; i < FLAKE_COUNT; i++) flakes.push(makeFlake());
-
-    function tick() {
-      ctx.clearRect(0, 0, w, h);
-
-      // Only draw snow when hero is visible (entry not off)
-      const entryVisible = !entry.classList.contains(ENTRY_OFF_CLASS);
-      if (!entryVisible) {
-        raf = requestAnimationFrame(tick);
-        return;
-      }
-
-      for (const f of flakes) {
-        f.x += f.vx;
-        f.y += f.vy;
-
-        if (f.y > h + 10) {
-          f.x = rand(0, w);
-          f.y = rand(-40, -10);
-        }
-        if (f.x > w + 10) f.x = -10;
-        if (f.x < -10) f.x = w + 10;
-
-        ctx.beginPath();
-        ctx.fillStyle = `rgba(255,255,255,${f.a})`;
-        ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      raf = requestAnimationFrame(tick);
-    }
-
-    // Respect reduced motion: lower intensity
-    if (prefersReduced) {
-      // just a static faint overlay by stopping early
-      return;
-    }
-
-    tick();
-
-    // Cleanup if needed
-    window.addEventListener('beforeunload', () => {
-      if (raf) cancelAnimationFrame(raf);
-    });
-  }
 })();
