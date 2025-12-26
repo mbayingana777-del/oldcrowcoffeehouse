@@ -6,359 +6,346 @@
   <title>Old Crow Coffeehouse — Arrival</title>
   <meta name="description" content="Old Crow Coffeehouse — Winter cozy arrival. Choose your moment and wander through the menu rooms." />
 
-  <!-- Typography -->
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-
   <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
   <a class="skip-link" href="#rooms" id="skip">Skip to rooms</a>
 
   <header class="site-header" aria-hidden="true">
-    <div class="brand" aria-hidden="true" title="Old Crow Coffeehouse">
-      <svg width="40" height="40" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-        <rect x="1" y="1" width="22" height="22" rx="6" fill="var(--forest)" />
-        <path d="M7 14c0-2.5 5-2.5 5-6s5-2 5-2" stroke="#fff8ee" stroke-width="1.1" fill="none" stroke-linecap="round"/>
-      </svg>
+    <div class="brand" aria-hidden="true">
+      <div class="brand-mark" aria-hidden="true"></div>
     </div>
   </header>
 
   <main>
-    <!-- HERO / ENTRY SCREEN -->
-    <section id="entry" class="entry-scene" role="region" aria-labelledby="entry-title" data-view="entry">
-      <div class="hero-bg" role="img" aria-label="Exterior of Old Crow Coffeehouse on a winter morning"></div>
-
-      <div class="overlays">
-        <div class="vignette" aria-hidden="true"></div>
-        <div class="grain" aria-hidden="true"></div>
-        <div class="overlay-gradient" aria-hidden="true"></div>
-      </div>
+    <!-- ARRIVAL / ENTRY -->
+    <section id="entry" class="entry-scene" role="region" aria-labelledby="entry-title">
+      <div class="entry-bg" aria-hidden="true"></div>
 
       <div class="entry-inner">
-        <div class="kicker">WINTER • JANUARY</div>
+        <div class="pill">WINTER • JANUARY</div>
         <h1 id="entry-title" class="headline">OLD CROW COFFEEHOUSE</h1>
         <p class="subtext">What brings you in today?</p>
 
         <nav class="choices" role="navigation" aria-label="Choose your mood">
           <button class="choice" data-target="counter" aria-controls="counter">
             <span class="emoji">☕</span>
-            <span class="label">Just need coffee</span>
-            <span class="hint2">Fast picks • espresso • hot drip</span>
+            <span class="choice-text">
+              <span class="choice-title">Just need coffee</span>
+              <span class="choice-sub">Fast picks • espresso • hot drip</span>
+            </span>
           </button>
 
           <button class="choice" data-target="breakfast" aria-controls="breakfast">
             <span class="emoji">🥐</span>
-            <span class="label">Breakfast vibes</span>
-            <span class="hint2">Sandwiches • toast • warm plates</span>
+            <span class="choice-text">
+              <span class="choice-title">Breakfast vibes</span>
+              <span class="choice-sub">Sandwiches • toast • warm plates</span>
+            </span>
           </button>
 
           <button class="choice" data-target="donuts" aria-controls="donuts">
             <span class="emoji">🍩</span>
-            <span class="label">Donuts (Fri &amp; Sat)</span>
-            <span class="hint2">Limited • arrive early</span>
+            <span class="choice-text">
+              <span class="choice-title">Donuts (Fri &amp; Sat)</span>
+              <span class="choice-sub">Limited • arrive early</span>
+            </span>
           </button>
 
           <button class="choice" data-target="slow" aria-controls="slow">
             <span class="emoji">🧘</span>
-            <span class="label">Slow morning</span>
-            <span class="hint2">Pour-over • tea • cozy seating</span>
+            <span class="choice-text">
+              <span class="choice-title">Slow morning</span>
+              <span class="choice-sub">Pour-over • tea • cozy seating</span>
+            </span>
           </button>
         </nav>
 
         <div class="entry-actions">
           <a class="order-cta" href="https://www.oldcrowcoffeehouse.com/s/order?location=L997DRP29E90H#XBLGAQVX3LQYZWHLURH52C2N" target="_blank" rel="noopener noreferrer">
-            Order on OldCrow → 
+            Order on OldCrow →
           </a>
+          <button class="ghost-cta" id="viewMenuBtn" type="button">View menu ↓</button>
         </div>
 
-        <p class="hint">Tap a choice — you’ll glide into the menu rooms.</p>
+        <div class="entry-cards" aria-hidden="true">
+          <div class="mini-card">
+            <img src="images/01-hero-exterior.jpg" alt="">
+            <div class="mini-card-text">
+              <div class="mini-title">1398 Merchant Street</div>
+              <div class="mini-sub">Pickup & cozy winter menu</div>
+            </div>
+          </div>
 
-        <div class="entry-scroll">
-          <button class="ghost" id="seeMenuBtn" type="button">View menu ↓</button>
+          <div class="mini-card">
+            <img src="images/09-cozy-seating.jpg" alt="">
+            <div class="mini-card-text">
+              <div class="mini-title">Sit + warm up</div>
+              <div class="mini-sub">Quiet corners, soft light</div>
+            </div>
+          </div>
         </div>
-      </div>
-
-      <div class="corner-note" aria-hidden="true">
-        <div class="chip">Pickup</div>
-        <div class="tiny">1398 Merchant Street • Cozy winter menu</div>
       </div>
     </section>
 
     <!-- ROOMS -->
-    <section id="rooms" class="rooms-section" tabindex="-1" aria-label="Coffeehouse rooms" data-view="rooms">
-      <div class="section-title">
-        <h2 class="section-h">Choose a lane. Leave knowing what you want.</h2>
-        <p class="section-p">Each room has “Most people want” picks + a photo menu preview.</p>
-      </div>
+    <section id="rooms" class="rooms-section" tabindex="-1" aria-label="Coffeehouse rooms">
+      <div class="rooms-wrap">
+        <div class="rooms" id="roomsList" role="list">
 
-      <div class="rooms" id="roomsList" role="list">
-        <!-- Room: The Counter -->
-        <article id="counter" class="room" role="listitem" aria-labelledby="counter-title">
-          <div class="room-panel">
-            <header class="room-head">
-              <div>
-                <h2 id="counter-title" class="room-title">The Counter</h2>
-                <p class="room-desc">Quick, considered coffee — pulled with care for a clear, warm cup.</p>
-              </div>
-
-              <aside class="room-aside" aria-label="Recommendation">
-                <div class="badge">MOST PEOPLE WANT</div>
-                <div class="aside-big">Hot coffee + one warm bite.</div>
-                <div class="aside-small">If you’re rushing: pick a latte and keep it moving.</div>
-              </aside>
-            </header>
-
-            <div class="two-col">
-              <div>
-                <h3 class="mini-h">Fast picks</h3>
-                <ul class="featured">
-                  <li>
-                    <strong>Espresso — Single</strong>
-                    <span class="item-desc">Clean pull, medium-dark roast.</span>
-                  </li>
-                  <li>
-                    <strong>Latte</strong>
-                    <span class="item-desc">Silky, warm, dependable.</span>
-                  </li>
-                  <li>
-                    <strong>Americano</strong>
-                    <span class="item-desc">Bright, familiar, no nonsense.</span>
-                  </li>
-                </ul>
-
-                <div class="actions-row">
-                  <a class="order" href="https://www.oldcrowcoffeehouse.com/s/order?location=L997DRP29E90H#XBLGAQVX3LQYZWHLURH52C2N" target="_blank" rel="noopener noreferrer">Order →</a>
-                  <button class="soft" type="button" data-jump="breakfast">Add breakfast →</button>
+          <!-- COUNTER -->
+          <article id="counter" class="room" role="listitem" aria-labelledby="counter-title">
+            <div class="room-panel">
+              <div class="room-top">
+                <div>
+                  <h2 id="counter-title" class="room-title">The Counter</h2>
+                  <p class="room-desc">Quick, considered coffee — clear flavor, warm cup, no fuss.</p>
+                </div>
+                <div class="room-badges">
+                  <span class="badge">Fast picks</span>
+                  <span class="badge">Espresso</span>
+                  <span class="badge">Hot drip</span>
                 </div>
               </div>
 
-              <div class="gallery">
-                <figure class="card">
-                  <img src="images/02-espresso-pour.jpg" alt="Espresso pour close-up" loading="lazy" />
-                  <figcaption>Espresso</figcaption>
-                </figure>
-                <figure class="card">
-                  <img src="images/03-latte-closeup.jpg" alt="Latte close-up" loading="lazy" />
-                  <figcaption>Latte</figcaption>
-                </figure>
-                <figure class="card">
-                  <img src="images/07-pour-over.jpg" alt="Pour-over coffee" loading="lazy" />
-                  <figcaption>Pour-over</figcaption>
-                </figure>
+              <div class="grid-2">
+                <div class="menu-block">
+                  <h3 class="block-title">Coffee &amp; Espresso</h3>
+                  <ul class="menu-list">
+                    <li><strong>Espresso</strong><span class="muted">single / double</span></li>
+                    <li><strong>Americano</strong><span class="muted">bright + familiar</span></li>
+                    <li><strong>Cappuccino</strong><span class="muted">microfoam + crema</span></li>
+                    <li><strong>Latte</strong><span class="muted">smooth + comforting</span></li>
+                    <li><strong>Hot Drip</strong><span class="muted">classic daily cup</span></li>
+                    <li><strong>Cold Brew</strong><span class="muted">clean, bold</span></li>
+                  </ul>
+
+                  <div class="callout">
+                    <div class="callout-pill">MOST PEOPLE WANT</div>
+                    <div class="callout-text">Coffee + one warm bite. Keep it easy — pick a sandwich.</div>
+                  </div>
+
+                  <a class="order" href="https://www.oldcrowcoffeehouse.com/s/order?location=L997DRP29E90H#XBLGAQVX3LQYZWHLURH52C2N" target="_blank" rel="noopener noreferrer">Order →</a>
+                </div>
+
+                <div class="photo-stack">
+                  <figure class="photo-card">
+                    <img src="images/02-espresso-pour.jpg" alt="Espresso being poured">
+                    <figcaption>Espresso pour</figcaption>
+                  </figure>
+                  <figure class="photo-card">
+                    <img src="images/03-latte-closeup.jpg" alt="Latte close up">
+                    <figcaption>Latte close-up</figcaption>
+                  </figure>
+                  <figure class="photo-card">
+                    <img src="images/07-pour-over.jpg" alt="Pour-over coffee">
+                    <figcaption>Pour-over</figcaption>
+                  </figure>
+                </div>
               </div>
             </div>
-          </div>
-        </article>
+          </article>
 
-        <!-- Room: Breakfast Table -->
-        <article id="breakfast" class="room" role="listitem" aria-labelledby="breakfast-title">
-          <div class="room-panel">
-            <header class="room-head">
-              <div>
-                <h2 id="breakfast-title" class="room-title">Breakfast Table</h2>
-                <p class="room-desc">Warm morning plates — thoughtful combinations to start the day.</p>
-              </div>
-
-              <aside class="room-aside" aria-label="Recommendation">
-                <div class="badge">JANUARY</div>
-                <div class="aside-big">Coffee + one warm sandwich.</div>
-                <div class="aside-small">If you can’t decide: breakfast sandwich.</div>
-              </aside>
-            </header>
-
-            <div class="two-col">
-              <div>
-                <h3 class="mini-h">Perfect pairings</h3>
-                <ul class="pairs">
-                  <li><strong>Latte</strong> + croissant</li>
-                  <li><strong>Cold brew</strong> + breakfast sandwich</li>
-                  <li><strong>Tea</strong> + avocado toast</li>
-                </ul>
-
-                <h3 class="mini-h">Breakfast picks</h3>
-                <ul class="featured">
-                  <li>
-                    <strong>Breakfast Sandwich</strong>
-                    <span class="item-desc">Egg, cheese, warm roll.</span>
-                  </li>
-                  <li>
-                    <strong>Avocado Toast</strong>
-                    <span class="item-desc">Clean, bright, satisfying.</span>
-                  </li>
-                  <li>
-                    <strong>Granola & Yogurt</strong>
-                    <span class="item-desc">Light, sweet, and clean.</span>
-                  </li>
-                </ul>
-
-                <div class="actions-row">
-                  <a class="order" href="https://www.oldcrowcoffeehouse.com/s/order?location=L997DRP29E90H#XBLGAQVX3LQYZWHLURH52C2N" target="_blank" rel="noopener noreferrer">Order →</a>
-                  <button class="soft" type="button" data-jump="donuts">See donuts →</button>
+          <!-- BREAKFAST -->
+          <article id="breakfast" class="room" role="listitem" aria-labelledby="breakfast-title">
+            <div class="room-panel">
+              <div class="room-top">
+                <div>
+                  <h2 id="breakfast-title" class="room-title">Breakfast Table</h2>
+                  <p class="room-desc">Warm morning plates — thoughtful combos that actually satisfy.</p>
+                </div>
+                <div class="room-badges">
+                  <span class="badge">Warm plates</span>
+                  <span class="badge">Toasts</span>
+                  <span class="badge">Sandwiches</span>
                 </div>
               </div>
 
-              <div class="gallery">
-                <figure class="card">
-                  <img src="images/04-breakfast-sandwich.jpg" alt="Breakfast sandwich on a plate" loading="lazy" />
-                  <figcaption>Warm sandwich</figcaption>
-                </figure>
-                <figure class="card">
-                  <img src="images/12-cookies-plate.jpg" alt="Cookies and coffee plate" loading="lazy" />
-                  <figcaption>Sweet plate</figcaption>
-                </figure>
-                <figure class="card">
-                  <img src="images/05-avocado-toast.jpg" alt="Avocado toast close up" loading="lazy" />
-                  <figcaption>Avocado toast</figcaption>
-                </figure>
+              <div class="grid-2">
+                <div class="menu-block">
+                  <h3 class="block-title">Breakfast Menu</h3>
+                  <div class="menu-columns">
+                    <div>
+                      <div class="col-title">Sandwiches</div>
+                      <ul class="menu-list tight">
+                        <li><strong>Breakfast Sandwich</strong><span class="muted">egg + cheese</span></li>
+                        <li><strong>Veggie Egg &amp; Cheese</strong><span class="muted">lighter option</span></li>
+                        <li><strong>Croissant Sandwich</strong><span class="muted">buttery, filling</span></li>
+                      </ul>
+
+                      <div class="col-title">Toasts</div>
+                      <ul class="menu-list tight">
+                        <li><strong>Avocado Toast</strong><span class="muted">clean + satisfying</span></li>
+                        <li><strong>Butter &amp; Jam Toast</strong><span class="muted">classic</span></li>
+                      </ul>
+                    </div>
+
+                    <div>
+                      <div class="col-title">Bowls &amp; Light</div>
+                      <ul class="menu-list tight">
+                        <li><strong>Granola &amp; Yogurt</strong><span class="muted">sweet + clean</span></li>
+                        <li><strong>Oatmeal</strong><span class="muted">warm + simple</span></li>
+                      </ul>
+
+                      <div class="callout soft">
+                        <div class="callout-pill">PERFECT PAIRINGS</div>
+                        <div class="callout-text">
+                          Latte + croissant<br>
+                          Cold brew + sandwich<br>
+                          Tea + avocado toast
+                        </div>
+                      </div>
+
+                      <a class="order" href="https://www.oldcrowcoffeehouse.com/s/order?location=L997DRP29E90H#XBLGAQVX3LQYZWHLURH52C2N" target="_blank" rel="noopener noreferrer">Order →</a>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="photo-grid">
+                  <figure class="photo-card">
+                    <img src="images/04-breakfast-sandwich.jpg" alt="Breakfast sandwich on a plate">
+                    <figcaption>Warm sandwich</figcaption>
+                  </figure>
+                  <figure class="photo-card">
+                    <img src="images/11-people-coffee.jpg" alt="Coffee moment">
+                    <figcaption>Coffee + bite</figcaption>
+                  </figure>
+                  <figure class="photo-card">
+                    <img src="images/05-avocado-toast.jpg" alt="Avocado toast close up">
+                    <figcaption>Avocado toast</figcaption>
+                  </figure>
+                </div>
               </div>
             </div>
-          </div>
-        </article>
+          </article>
 
-        <!-- Room: Donut Drop -->
-        <article id="donuts" class="room" role="listitem" aria-labelledby="donuts-title">
-          <div class="room-panel">
-            <header class="room-head">
-              <div>
-                <h2 id="donuts-title" class="room-title">Donut Drop</h2>
-                <p class="room-desc">Small-batch donuts — limited days. Arrive early for the best selection.</p>
-              </div>
-
-              <aside class="room-aside" aria-label="Schedule">
-                <div class="badge">LIMITED</div>
-                <div class="aside-big">Friday &amp; Saturday.</div>
-                <div class="aside-small">If you see them, grab them.</div>
-              </aside>
-            </header>
-
-            <div class="two-col">
-              <div>
-                <h3 class="mini-h">Donut picks</h3>
-                <ul class="featured">
-                  <li>
-                    <strong>Classic Glazed</strong>
-                    <span class="item-desc">Tender crumb, light glaze.</span>
-                  </li>
-                  <li>
-                    <strong>Salted Chocolate</strong>
-                    <span class="item-desc">Dark finish, flake sea salt.</span>
-                  </li>
-                  <li>
-                    <strong>Citrus Ricotta</strong>
-                    <span class="item-desc">Bright lemon, soft ricotta dough.</span>
-                  </li>
-                </ul>
-
-                <p class="schedule-note">Usually available: Friday &amp; Saturday</p>
-
-                <div class="actions-row">
-                  <a class="order" href="https://www.oldcrowcoffeehouse.com/s/order?location=L997DRP29E90H#XBLGAQVX3LQYZWHLURH52C2N" target="_blank" rel="noopener noreferrer">Order →</a>
-                  <button class="soft" type="button" data-jump="slow">Go slow →</button>
+          <!-- DONUTS -->
+          <article id="donuts" class="room" role="listitem" aria-labelledby="donuts-title">
+            <div class="room-panel">
+              <div class="room-top">
+                <div>
+                  <h2 id="donuts-title" class="room-title">Donut Drop</h2>
+                  <p class="room-desc">Small-batch donuts — limited days. If you want them, arrive early.</p>
+                </div>
+                <div class="room-badges">
+                  <span class="badge warn">Fri &amp; Sat</span>
+                  <span class="badge">Limited</span>
+                  <span class="badge">Early</span>
                 </div>
               </div>
 
-              <div class="gallery">
-                <figure class="card">
-                  <!-- NOTE: your file is .png here -->
-                  <img src="images/06-donuts-glazed.png" alt="Fresh glazed donuts" loading="lazy" />
-                  <figcaption>Glazed donuts</figcaption>
-                </figure>
-                <figure class="card">
-                  <img src="images/12-cookies-plate.jpg" alt="Cookies plate" loading="lazy" />
-                  <figcaption>Cookies plate</figcaption>
-                </figure>
-                <figure class="card">
-                  <img src="images/11-people-coffee.jpg" alt="People enjoying coffee" loading="lazy" />
-                  <figcaption>Bring a friend</figcaption>
-                </figure>
+              <div class="grid-2">
+                <div class="menu-block">
+                  <h3 class="block-title">Donuts</h3>
+                  <ul class="menu-list">
+                    <li><strong>Classic Glazed</strong><span class="muted">vanilla glaze</span></li>
+                    <li><strong>Chocolate</strong><span class="muted">rich finish</span></li>
+                    <li><strong>Seasonal</strong><span class="muted">rotates weekly</span></li>
+                  </ul>
+
+                  <div class="notice">
+                    <strong>Available:</strong> Friday &amp; Saturday mornings. Best selection early.
+                  </div>
+
+                  <a class="order" href="https://www.oldcrowcoffeehouse.com/s/order?location=L997DRP29E90H#XBLGAQVX3LQYZWHLURH52C2N" target="_blank" rel="noopener noreferrer">Order →</a>
+                </div>
+
+                <div class="photo-stack">
+                  <figure class="photo-card">
+                    <img src="images/06-donuts-glazed.png" alt="Fresh glazed donuts">
+                    <figcaption>Glazed donuts</figcaption>
+                  </figure>
+                  <figure class="photo-card">
+                    <img src="images/12-cookies-plate.jpg" alt="Cookies plate">
+                    <figcaption>Cookies plate</figcaption>
+                  </figure>
+                  <figure class="photo-card">
+                    <img src="images/10-ambient-blur.jpg" alt="Cafe ambience">
+                    <figcaption>Cozy ambience</figcaption>
+                  </figure>
+                </div>
               </div>
             </div>
-          </div>
-        </article>
+          </article>
 
-        <!-- Room: Slow Morning -->
-        <article id="slow" class="room" role="listitem" aria-labelledby="slow-title">
-          <div class="room-panel">
-            <header class="room-head">
-              <div>
-                <h2 id="slow-title" class="room-title">Slow Morning</h2>
-                <p class="room-desc">Space to linger — warm light, quiet cups, seating for thinking.</p>
-              </div>
-
-              <aside class="room-aside" aria-label="Mood">
-                <div class="badge">SLOW</div>
-                <div class="aside-big">Sit. Reset. Warm up.</div>
-                <div class="aside-small">This is your “good morning” spot.</div>
-              </aside>
-            </header>
-
-            <div class="two-col">
-              <div>
-                <h3 class="mini-h">Slow picks</h3>
-                <ul class="featured">
-                  <li>
-                    <strong>Pour Over</strong>
-                    <span class="item-desc">Single-origin, brewed to order.</span>
-                  </li>
-                  <li>
-                    <strong>Loose Leaf Tea</strong>
-                    <span class="item-desc">Seasonal rotation.</span>
-                  </li>
-                  <li>
-                    <strong>Pastry Plate</strong>
-                    <span class="item-desc">Something small to go with the cup.</span>
-                  </li>
-                </ul>
-
-                <div class="actions-row">
-                  <a class="order" href="https://www.oldcrowcoffeehouse.com/s/order?location=L997DRP29E90H#XBLGAQVX3LQYZWHLURH52C2N" target="_blank" rel="noopener noreferrer">Order →</a>
-                  <button class="soft" type="button" data-jump="counter">Back to coffee →</button>
+          <!-- SLOW -->
+          <article id="slow" class="room" role="listitem" aria-labelledby="slow-title">
+            <div class="room-panel">
+              <div class="room-top">
+                <div>
+                  <h2 id="slow-title" class="room-title">Slow Morning</h2>
+                  <p class="room-desc">A place to linger — warm light, quiet tables, and time.</p>
+                </div>
+                <div class="room-badges">
+                  <span class="badge">Tea</span>
+                  <span class="badge">Cozy seating</span>
+                  <span class="badge">Pour-over</span>
                 </div>
               </div>
 
-              <div class="gallery">
-                <figure class="card">
-                  <img src="images/08-interior-wide.jpg" alt="Interior wide view" loading="lazy" />
-                  <figcaption>Inside</figcaption>
-                </figure>
-                <figure class="card">
-                  <img src="images/09-cozy-seating.jpg" alt="Cozy seating area" loading="lazy" />
-                  <figcaption>Cozy seating</figcaption>
-                </figure>
-                <figure class="card">
-                  <img src="images/10-ambient-blur.jpg" alt="Ambient cafe scene" loading="lazy" />
-                  <figcaption>Ambient</figcaption>
-                </figure>
+              <div class="grid-2">
+                <div class="menu-block">
+                  <h3 class="block-title">Warm + Quiet</h3>
+                  <ul class="menu-list">
+                    <li><strong>Pour-over</strong><span class="muted">brewed to order</span></li>
+                    <li><strong>Loose leaf tea</strong><span class="muted">classic + seasonal</span></li>
+                    <li><strong>Pastry plate</strong><span class="muted">something small</span></li>
+                  </ul>
+
+                  <div class="callout soft">
+                    <div class="callout-pill">SLOW MOVE</div>
+                    <div class="callout-text">Pick a drink. Find a seat. Let the morning stretch.</div>
+                  </div>
+
+                  <a class="order" href="https://www.oldcrowcoffeehouse.com/s/order?location=L997DRP29E90H#XBLGAQVX3LQYZWHLURH52C2N" target="_blank" rel="noopener noreferrer">Order →</a>
+                </div>
+
+                <div class="photo-grid">
+                  <figure class="photo-card">
+                    <img src="images/08-interior-wide.jpg" alt="Interior wide view">
+                    <figcaption>Interior</figcaption>
+                  </figure>
+                  <figure class="photo-card">
+                    <img src="images/09-cozy-seating.jpg" alt="Cozy seating">
+                    <figcaption>Cozy seating</figcaption>
+                  </figure>
+                  <figure class="photo-card">
+                    <img src="images/01-hero-exterior.jpg" alt="Exterior">
+                    <figcaption>Step in</figcaption>
+                  </figure>
+                </div>
               </div>
             </div>
-          </div>
-        </article>
+          </article>
 
+        </div>
       </div>
     </section>
   </main>
 
   <!-- HUD / Bottom navigation -->
   <nav class="hud" role="navigation" aria-label="Rooms navigation">
+    <button class="hud-arrival" id="backToArrival" type="button">← ARRIVAL</button>
+
     <div class="hud-left" role="group" aria-label="Rooms">
-      <button class="hud-btn hud-arrival" data-target="entry" aria-label="Go to Arrival">← ARRIVAL</button>
       <button class="hud-btn" data-target="counter" aria-label="Go to The Counter">Counter</button>
       <button class="hud-btn" data-target="breakfast" aria-label="Go to Breakfast Table">Breakfast</button>
       <button class="hud-btn" data-target="donuts" aria-label="Go to Donut Drop">Donuts</button>
       <button class="hud-btn" data-target="slow" aria-label="Go to Slow Morning">Slow</button>
     </div>
 
-    <div class="hud-right">
-      <a class="hud-order" href="https://www.oldcrowcoffeehouse.com/s/order?location=L997DRP29E90H#XBLGAQVX3LQYZWHLURH52C2N" target="_blank" rel="noopener noreferrer">Order →</a>
-    </div>
+    <a class="hud-order" href="https://www.oldcrowcoffeehouse.com/s/order?location=L997DRP29E90H#XBLGAQVX3LQYZWHLURH52C2N" target="_blank" rel="noopener noreferrer">
+      Order →
+    </a>
   </nav>
 
   <footer class="site-footer" aria-hidden="true">
     <small>© Old Crow Coffeehouse — Winter • January</small>
   </footer>
 
-  <div class="scroll-progress" aria-hidden="true"><div class="scroll-bar" id="scrollBar"></div></div>
-
   <script src="script.js" defer></script>
 </body>
 </html>
+
